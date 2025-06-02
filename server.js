@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { dbConnection } = require("./configs/db");
+const cors = require("cors");
+const helmet = require("helmet");
 
 // get envirometn variables
 dotenv.config();
@@ -11,8 +13,14 @@ dbConnection();
 // create app
 const app = express();
 
-// parse to json format
+// middlewares
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
+
+// routes
+app.use("/api/auth", require("./routes/auth_route"));
+app.use("/api/users", require("./routes/user_route"));
 
 // run server
 const PORT = process.env.PORT || 3000;
