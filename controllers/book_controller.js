@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { Book, validateBook } = require("../models/Book");
-
+const path = require("path");
 // get all books
 const getBooks = asyncHandler(async (req, res) => {
   // Step 1: Extract query parameters
@@ -95,4 +95,41 @@ const deleteBook = asyncHandler(async (req, res) => {
   await Book.findByIdAndDelete(req.params.id);
   return res.status(200).json({ message: "Deleted Successfully" });
 });
-module.exports = { createBook, updateBook, getBooks, deleteBook };
+
+const uploadBookCover = async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ message: "No image uploaded." });
+  }
+
+  const imagePath = `/uploads/bookCovers/${req.file.filename}`;
+
+  try {
+    const book = await Book.findByIdAndUpdate(
+      id,
+      { coverImage: imagePath },
+      { new: true }
+    );
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found." });
+    }
+
+    res.json({
+      message: "Cover image uploaded successfully.",
+      coverImage: book.coverImage,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error while uploading image." });
+  }
+};
+
+module.exports = {
+  createBook,
+  updateBook,
+  getBooks,
+  deleteBook,
+  uploadBookCover,
+};

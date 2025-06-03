@@ -7,11 +7,16 @@ const helmet = require("helmet");
 // get envirometn variables
 dotenv.config();
 
+const path = require("path");
+
 // database connection
 dbConnection();
 
 // create app
 const app = express();
+
+// Serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // middlewares
 app.use(express.json());
@@ -22,6 +27,7 @@ app.use(cors());
 app.use("/api/auth", require("./routes/auth_route"));
 app.use("/api/users", require("./routes/user_route"));
 app.use("/api/books", require("./routes/book_route"));
+app.use("/api/borrows", require("./routes/borrow_route"));
 
 // run server
 const PORT = process.env.PORT || 3000;
