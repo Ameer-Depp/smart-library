@@ -18,6 +18,8 @@ dbConnection();
 // create app
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -33,14 +35,14 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // middlewares
-app.use((req, res, next) => {
-  try {
-    mongoSanitize()(req, res, next);
-  } catch (e) {
-    console.error("Sanitize error:", e);
-    next();
-  }
-});
+// app.use((req, res, next) => {
+//   try {
+//     mongoSanitize()(req, res, next);
+//   } catch (e) {
+//     console.error("Sanitize error:", e);
+//     next();
+//   }
+// });
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
