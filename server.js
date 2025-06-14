@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
+const swaggerDocs = require("./swagger");
 
 // get envirometn variables
 dotenv.config();
@@ -17,6 +18,7 @@ dbConnection();
 
 // create app
 const app = express();
+swaggerDocs(app);
 
 app.set("trust proxy", 1);
 
